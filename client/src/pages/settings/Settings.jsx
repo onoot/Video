@@ -515,30 +515,70 @@ const Settings = () => {
 
   return (
     <Box>
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" fontWeight="bold">
-            Настройки системы
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              variant="outlined"
-              startIcon={<RefreshIcon />}
-              onClick={loadSettings}
-            >
-              Обновить
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<SaveIcon />}
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? 'Сохранение...' : 'Сохранить'}
-            </Button>
-          </Box>
-        </Box>
-
+      
+       <Paper 
+  elevation={1} 
+  sx={{ 
+    p: { xs: 2, sm: 3 }, 
+    mb: 3, 
+    borderRadius: 2,
+    backgroundColor: 'background.paper'
+  }}
+>
+  <Box sx={{ 
+    display: 'flex', 
+    flexDirection: { xs: 'column', md: 'row' },
+    justifyContent: 'space-between', 
+    alignItems: { xs: 'flex-start', md: 'center' },
+    gap: { xs: 2, md: 0 }
+  }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <SettingsIcon sx={{ fontSize: { xs: 28, sm: 32 }, color: 'primary.main' }} />
+      <Box>
+        <Typography variant="h5" fontWeight="bold" gutterBottom={false}>
+          Настройки системы
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Управление параметрами приложения
+        </Typography>
+      </Box>
+    </Box>
+    
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', sm: 'row', md: 'column', lg: 'row' },
+      gap: 1.5,
+      mb: 1,
+      ml: 1,
+      width: { xs: '100%', md: 'auto' }
+    }}>
+      <Tooltip title="Обновить настройки">
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
+          onClick={loadSettings}
+          color="inherit"
+          fullWidth={window.innerWidth < 600}
+          size="medium"
+        >
+          Обновить
+        </Button>
+      </Tooltip>
+      <Tooltip title="Сохранить все изменения">
+        <Button
+          variant="contained"
+          startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+          onClick={handleSave}
+          disabled={saving}
+          color="primary"
+          fullWidth={window.innerWidth < 600}
+          size="medium"
+        >
+          {saving ? 'Сохранение...' : 'Сохранить'}
+        </Button>
+      </Tooltip>
+    </Box>
+  </Box>
         {error && (
           <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
             {error}
@@ -592,102 +632,118 @@ const Settings = () => {
         <Divider sx={{ my: 3 }} />
 
         <Card sx={{ mt: 3 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <AccountIcon />
-              Настройки учетной записи
-            </Typography>
-            
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Typography variant="subtitle1" gutterBottom color="text.secondary">
-                  Смена логина
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-                  <TextField
-                    fullWidth
-                    value={loginData.login}
-                    onChange={handleNewLoginChange}
-                    placeholder="Введите новый логин"
-                    helperText={loginData.showSaveButton ? "Для сохранения введите пароль ниже" : `Текущий логин: ${user?.login}`}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <AccountIcon color="action" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: loginData.showSaveButton && (
-                        <InputAdornment position="end">
-                          <Box sx={{ display: 'flex', gap: 0.5 }}>
-                            <Tooltip title="Сохранить">
-                              <IconButton
-                                size="small"
-                                onClick={handleLoginChange}
-                                disabled={loginData.isSaving || !loginData.pass}
-                                color="primary"
-                              >
-                                {loginData.isSaving ? (
-                                  <CircularProgress size={20} />
-                                ) : (
-                                  <CheckIcon />
-                                )}
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Отменить">
-                              <IconButton
-                                size="small"
-                                onClick={cancelLoginChange}
-                                color="inherit"
-                              >
-                                <CancelIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Box>
-                
-                {loginData.showSaveButton && (
-                  <TextField
-                    fullWidth
-                    sx={{ mt: 2 }}
-                    type={loginData.showPass ? "text" : "password"}
-                    label="Пароль"
-                    value={loginData.pass}
-                    onChange={handleLoginPasswordChange}
-                    helperText="Введите пароль для подтверждения"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={toggleLoginPasswordVisibility}
-                            edge="end"
-                          >
-                            {loginData.showPass ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                )}
-              </Grid>
-
-              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  startIcon={<LockIcon />}
-                  onClick={() => setPasswordDialog({ ...passwordDialog, open: true })}
-                  sx={{ height: '56px' }}
-                >
-                  Изменить пароль
-                </Button>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+  <CardContent>
+    <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <AccountIcon />
+      Настройки учетной записи
+    </Typography>
+    
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: { xs: 'column', md: 'row' },
+      gap: 3,
+      alignItems: { xs: 'stretch', md: 'flex-start' }
+    }}>
+      {/* Блок смены логина */}
+      <Box sx={{ flex: { xs: 1, md: 2 } }}>
+        <Typography variant="subtitle1" gutterBottom color="text.secondary">
+          Смена логина
+        </Typography>
+        
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+          <TextField
+            fullWidth
+            value={loginData.login}
+            onChange={handleNewLoginChange}
+            placeholder="Введите новый логин"
+            helperText={loginData.showSaveButton ? "Для сохранения введите пароль ниже" : `Текущий логин: ${user?.login}`}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <AccountIcon color="action" />
+                </InputAdornment>
+              ),
+              endAdornment: loginData.showSaveButton && (
+                <InputAdornment position="end">
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <Tooltip title="Сохранить">
+                      <IconButton
+                        size="small"
+                        onClick={handleLoginChange}
+                        disabled={loginData.isSaving || !loginData.pass}
+                        color="primary"
+                      >
+                        {loginData.isSaving ? (
+                          <CircularProgress size={20} />
+                        ) : (
+                          <CheckIcon />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Отменить">
+                      <IconButton
+                        size="small"
+                        onClick={cancelLoginChange}
+                        color="inherit"
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        
+        {loginData.showSaveButton && (
+          <TextField
+            fullWidth
+            sx={{ mt: 2 }}
+            type={loginData.showPass ? "text" : "password"}
+            label="Пароль"
+            value={loginData.pass}
+            onChange={handleLoginPasswordChange}
+            helperText="Введите пароль для подтверждения"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={toggleLoginPasswordVisibility}
+                    edge="end"
+                  >
+                    {loginData.showPass ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+      </Box>
+      
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: { xs: 'flex-start', md: 'flex-end' },
+        justifyContent: { xs: 'flex-start', md: 'center' },
+        width: { xs: '100%', md: 'auto' },
+        mt: { xs: 4, md: 4, sm: 0 }
+      }}>
+        <Button
+          variant="outlined"
+          fullWidth={false}
+          startIcon={<LockIcon />}
+          onClick={() => setPasswordDialog({ ...passwordDialog, open: true })}
+          sx={{ 
+            height: '56px',
+            minWidth: { xs: '100%', md: '200px' }
+          }}
+        >
+          Изменить пароль
+        </Button>
+      </Box>
+    </Box>
+  </CardContent>
+</Card>
       </Paper>
 
       <Dialog
@@ -713,11 +769,10 @@ const Settings = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
+       <Dialog
         open={passwordDialog.open}
         onClose={() => setPasswordDialog({ ...passwordDialog, open: false })}
         maxWidth="sm"
-        fullWidth
       >
         <DialogTitle>Изменение пароля</DialogTitle>
         <DialogContent>
@@ -726,16 +781,17 @@ const Settings = () => {
               <TextField
                 type={passwordDialog.showOld ? "text" : "password"}
                 label="Старый пароль"
-                value={passwordDialog.old}
+                value={passwordDialog.pass}
                 onChange={(e) => setPasswordDialog({ ...passwordDialog, old: e.target.value })}
+                helperText="Минимум 8 символов"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => togglePasswordVisibility('showOld')}
+                        onClick={() => togglePasswordVisibility('showPass')}
                         edge="end"
                       >
-                        {passwordDialog.showOld ? <VisibilityOff /> : <Visibility />}
+                        {passwordDialog.showPass ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
