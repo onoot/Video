@@ -6743,7 +6743,7 @@ fieldset:disabled .btn {
 
     .modal-dialog {
         max-width: var(--bs-modal-width);
-        margin-right: 10%;
+        margin-right: 20%;
         margin-left: auto
     }
 
