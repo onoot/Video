@@ -21,12 +21,6 @@ const defaultSettings = {
     category: 'folders',
     description: 'Папка по умолчанию для выходных файлов'
   },
-  'temp_path': {
-    value: '/temp',
-    type: 'path',
-    category: 'folders',
-    description: 'Папка для временных файлов'
-  },
   
   // Частоты проверок
   'watcher_check_interval': {
