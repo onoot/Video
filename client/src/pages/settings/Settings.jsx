@@ -104,6 +104,7 @@ const Settings = () => {
     currentPath: '',
     fileTree: [],
     expandedDirs: new Set(),
+    selectedPath: '',
   });
   
   const { showNotification } = useNotification();
@@ -333,6 +334,7 @@ const Settings = () => {
         currentPath,
         fileTree,
         expandedDirs: new Set(),
+        selectedPath: currentPath,
       });
     } catch (err) {
       console.error('Ошибка загрузки файловой структуры:', err);
@@ -340,9 +342,14 @@ const Settings = () => {
     }
   };
 
-  const handlePathSelect = (path) => {
-    handleSettingChange(pathSelectorDialog.settingKey, path);
-    setPathSelectorDialog(prev => ({ ...prev, open: false }));
+  const handleDialogSave = () => {
+    if (pathSelectorDialog.selectedPath) {
+      handleSettingChange(pathSelectorDialog.settingKey, pathSelectorDialog.selectedPath);
+      setPathSelectorDialog(prev => ({ ...prev, open: false }));
+      showNotification('success', 'Путь сохранен');
+    } else {
+      showNotification('warning', 'Выберите папку');
+    }
   };
 
   const toggleDirExpansion = (dirPath) => {
@@ -358,23 +365,25 @@ const Settings = () => {
     }));
   };
 
+  const handleFolderSelect = (path) => {
+    setPathSelectorDialog(prev => ({
+      ...prev,
+      selectedPath: path,
+    }));
+  };
+
   const renderPathTree = (nodes, depth = 0) => {
     return nodes.map((node) => {
-      const isExpanded = pathSelectorDialog.expandedDirs.has(node.path);
-      const isSelected = pathSelectorDialog.currentPath === node.path;
-
       if (!node.isDirectory) return null;
+
+      const isExpanded = pathSelectorDialog.expandedDirs.has(node.path);
+      const isSelected = pathSelectorDialog.selectedPath === node.path;
 
       return (
         <React.Fragment key={node.path}>
           <ListItemButton
-            onClick={() => {
-              if (isExpanded) {
-                toggleDirExpansion(node.path);
-              } else {
-                toggleDirExpansion(node.path);
-              }
-            }}
+            onClick={() => handleFolderSelect(node.path)}
+            onDoubleClick={() => toggleDirExpansion(node.path)}
             selected={isSelected}
             sx={{
               pl: depth * 4 + 2,
@@ -383,6 +392,9 @@ const Settings = () => {
                 bgcolor: 'primary.main',
                 color: 'white',
                 '&:hover': { bgcolor: 'primary.dark' },
+              },
+              '&:hover': {
+                bgcolor: isSelected ? 'primary.dark' : 'action.hover',
               },
             }}
           >
@@ -396,17 +408,6 @@ const Settings = () => {
               primary={node.name}
               secondary={node.path}
             />
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePathSelect(node.path);
-              }}
-              sx={{ ml: 1 }}
-            >
-              Выбрать
-            </Button>
           </ListItemButton>
           {node.isDirectory && isExpanded && node.children && (
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
@@ -826,7 +827,7 @@ const Settings = () => {
         <DialogContent>
           <Box sx={{ mt: 2, mb: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              Выберите папку из файловой системы
+              Нажмите на папку для выбора, двойной клик для раскрытия/скрытия содержимого
             </Typography>
           </Box>
           <Paper variant="outlined" sx={{ maxHeight: 400, overflow: 'auto' }}>
@@ -836,7 +837,7 @@ const Settings = () => {
           </Paper>
           <Box sx={{ mt: 2 }}>
             <Typography variant="caption" color="text.secondary">
-              Текущий путь: {pathSelectorDialog.currentPath || 'Не выбран'}
+              Текущий путь: {pathSelectorDialog.selectedPath || 'Не выбран'}
             </Typography>
           </Box>
         </DialogContent>
@@ -845,11 +846,11 @@ const Settings = () => {
             Отмена
           </Button>
           <Button 
-            onClick={() => handlePathSelect(pathSelectorDialog.currentPath)}
+            onClick={handleDialogSave}
             variant="contained"
-            disabled={!pathSelectorDialog.currentPath}
+            disabled={!pathSelectorDialog.selectedPath}
           >
-            Выбрать текущий путь
+            Сохранить
           </Button>
         </DialogActions>
       </Dialog>
