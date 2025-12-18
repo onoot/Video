@@ -550,11 +550,11 @@ const Settings = () => {
           </Alert>
         )}
 
-        <Grid container spacing={3}>
+        <Grid container spacing={3}  width={'100%'}>
           {Object.entries(settings).map(([category, categorySettings]) => (
-            <Grid item xs={12} key={category}>
-              <Card>
-                <CardContent>
+            <Grid item xs={12} key={category}  width={'100%'}>
+              <Card  width={'100%'}>
+                <CardContent  width={'100%'}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       {getCategoryIcon(category)}
@@ -575,9 +575,9 @@ const Settings = () => {
                   
                   <Divider sx={{ mb: 2 }} />
                   
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2}  width={'100%'}>
                     {categorySettings.map((setting) => (
-                      <Grid item xs={12} sm={6} md={4} key={setting.key}>
+                      <Grid item xs={12} sm={6} md={4} key={setting.key} width={'100%'}>
                         {renderSettingField(setting)}
                       </Grid>
                     ))}
